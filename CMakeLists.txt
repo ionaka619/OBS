@@ -15,6 +15,11 @@ include(defaults)
 include(helpers)
 
 add_library(${CMAKE_PROJECT_NAME} MODULE)
+target_compile_features(${CMAKE_PROJECT_NAME} PRIVATE cxx_std_20)
+set_target_properties(
+  ${CMAKE_PROJECT_NAME}
+  PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON CXX_EXTENSIONS OFF
+)
 
 find_package(libobs REQUIRED)
 find_package(OpenCV REQUIRED COMPONENTS core imgproc objdetect)
