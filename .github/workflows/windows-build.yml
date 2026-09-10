@@ -18,7 +18,7 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/microsoft/vcpkg.git "$env:VCPKG_ROOT"
           & "$env:VCPKG_ROOT/bootstrap-vcpkg.bat" -disableMetrics
-          & "$env:VCPKG_ROOT/vcpkg.exe" install --triplet x64-windows-static-md
+          & "$env:VCPKG_ROOT/vcpkg.exe" install opencv:x64-windows-static-md
       - name: Build and install
         shell: pwsh
         run: .github/scripts/Build-Windows.ps1 -Target x64 -Configuration RelWithDebInfo
