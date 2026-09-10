@@ -1,0 +1,21 @@
+uniform float4x4 ViewProj;
+uniform texture2d image;
+uniform texture2d sticker;
+uniform float4 sticker_rect;
+uniform float sticker_rotation;
+
+sampler_state linear_clamp { Filter = Linear; AddressU = Clamp; AddressV = Clamp; };
+struct VertData { float4 pos : POSITION; float2 uv : TEXCOORD0; };
+VertData VSDefault(VertData v) { v.pos = mul(float4(v.pos.xyz, 1.0), ViewProj); return v; }
+float4 PSSticker(VertData v) : TARGET
+{
+	float4 base = image.Sample(linear_clamp, v.uv);
+	float2 p = v.uv - sticker_rect.xy;
+	float c = cos(-sticker_rotation), s = sin(-sticker_rotation);
+	float2 q = float2(c * p.x - s * p.y, s * p.x + c * p.y);
+	float2 uv = q / sticker_rect.zw + 0.5;
+	if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) return base;
+	float4 decal = sticker.Sample(linear_clamp, uv);
+	return float4(decal.rgb * decal.a + base.rgb * (1.0 - decal.a), decal.a + base.a * (1.0 - decal.a));
+}
+technique Draw { pass { vertex_shader = VSDefault(v); pixel_shader = PSSticker(v); } }

@@ -1,0 +1,28 @@
+name: Windows Build
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+jobs:
+  build:
+    runs-on: windows-2022
+    env:
+      CI: "true"
+      VCPKG_ROOT: ${{ github.workspace }}\vcpkg
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install vcpkg
+        shell: pwsh
+        run: |
+          git clone --depth 1 https://github.com/microsoft/vcpkg.git "$env:VCPKG_ROOT"
+          & "$env:VCPKG_ROOT/bootstrap-vcpkg.bat" -disableMetrics
+      - name: Build and install
+        shell: pwsh
+        run: .github/scripts/Build-Windows.ps1 -Target x64 -Configuration RelWithDebInfo
+      - name: Upload plugin
+        uses: actions/upload-artifact@v4
+        with:
+          name: obs-face-sticker-0.1.0-windows-x64
+          path: release/RelWithDebInfo/**
