@@ -54,8 +54,13 @@ function Build {
     }
     $VcpkgPrefix = Join-Path $VcpkgRoot 'installed/x64-windows-static-md'
     $OpenCvDir = Join-Path $VcpkgPrefix 'share/opencv4'
+    $ProtocExecutable = Join-Path $VcpkgPrefix 'tools/protobuf/protoc.exe'
+    if (!(Test-Path -Path $ProtocExecutable -PathType Leaf)) {
+        throw "vcpkg protoc executable was not found at ${ProtocExecutable}."
+    }
     $CmakeArgs += "-DCMAKE_PREFIX_PATH=${VcpkgPrefix}"
     $CmakeArgs += "-DOpenCV_DIR=${OpenCvDir}"
+    $CmakeArgs += "-DProtobuf_PROTOC_EXECUTABLE=${ProtocExecutable}"
     $CmakeBuildArgs = @('--build')
     $CmakeInstallArgs = @()
 
