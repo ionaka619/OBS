@@ -52,7 +52,8 @@ function Build {
     if (!$VcpkgRoot) {
         throw 'VCPKG_ROOT or VCPKG_INSTALLATION_ROOT must point to a vcpkg installation.'
     }
-    $CmakeArgs += "-DCMAKE_TOOLCHAIN_FILE=${VcpkgRoot}/scripts/buildsystems/vcpkg.cmake"
+    $OpenCvDir = Join-Path $VcpkgRoot 'installed/x64-windows-static-md/share/opencv4'
+    $CmakeArgs += "-DOpenCV_DIR=${OpenCvDir}"
     $CmakeBuildArgs = @('--build')
     $CmakeInstallArgs = @()
 
